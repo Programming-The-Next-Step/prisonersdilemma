@@ -1,1 +1,2 @@
 # prisonersdilemma
+Implementing the single-trial prisoner’s dilemma, however manipulating the second prisoner a participant would have to deal with by randomly depicting an in-group or out-group member or giving no information. This software is meant for use in experiments; for example, investigating whether knowing that the counterpart is an in-group member will increase cooperative behaviour. This project will be programmed in Python PsychoPy.
