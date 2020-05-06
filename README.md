@@ -4,7 +4,7 @@ The goal of this project is implementing the single-trial prisoner’s dilemma, 
 Implementing the prisoner's dilemma game will consist of the following steps and components:
 
 * Introduction, explaining to participants what the story is what they are supposed to do. This could look something like this:
-> Imagine you are one of two people being questioned about the same crime. >They are each talking to the interrogator separately. The interrogator gives > each person the same deal: they can choose to vouch for the other person’s innocence or rat them out. And of course, there’s a twist. If both people vouch > for each other, they’ll each get 3 months off their sentence, but if the first person vouches for the second person, and the second person rats them out, > the first person will get no time off their sentence and the second person will get 5 months off their time. Lastly, if they both rat each other out, they >each get 1 month off their time.
+> Imagine you are one of two people being questioned about the same crime. >They are each talking to the interrogator separately. The interrogator gives each person the same deal: they can choose to vouch for the other person’s innocence or rat them out. And of course, there’s a twist. If both people vouch for each other, they’ll each get 3 months off their sentence, but if the first person vouches for the second person, and the second person rats them out, the first person will get no time off their sentence and the second person will get 5 months off their time. Lastly, if they both rat each other out, they each get 1 month off their time.
 
 * Graphical user interface: the participant will see his/her avatar on the left and their opponents on the right, separated by a brick wall. The background should look like a prison wall. The controls can be seen on the bottom part of the screen. Additionally, there will be a counter, indicating both prisoner’s sentences in months. It starts with a sentence of 35 months and will be updated after each round.
 
@@ -24,7 +24,7 @@ Implementing the prisoner's dilemma game will consist of the following steps and
 	4. Nice tit for tat: opponent cooperates in the first round, then copies the participant's moves
 	5. Suspicious tit for tat: opponent defects in the first round, then copies the participant's moves
 	(peers: if you have ideas for other strategies that could be interesting, please tell me in the feedback!)
-	* There will be connecting screens between the rounds, telling participants the lenght of their sentence at that point. Following the narrative of a prisoner's dilemma, it will also say that the participant will no be interrogated by a different officer and that they have again the choice of cooperating or defecting. 
+	* There will be connecting screens between the rounds, telling participants the lenght of their sentence at that point. Following the narrative of a prisoner's dilemma, it will also say that the interrogating officers have not made a definite choice yet and will keep on interrogating. Therefore, they have again the choice of cooperating or defecting. (Peers: if you have better ideas on the narrative, I'd like to hear that out)
 
 * The goodbye screen: 
 A screen stating the lenght of the final sentence and thanking the participant for taking part.
