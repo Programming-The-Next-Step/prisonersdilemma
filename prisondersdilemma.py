@@ -5,7 +5,7 @@ Created on Thu May  7 13:37:28 2020
 @author: katha
 """
 '''
-These are th modules used for this experiment.
+These are the modules used for this experiment.
 '''
 
 
@@ -19,7 +19,7 @@ import random
 from win32api import GetSystemMetrics
 import ctypes
 
-def run:
+def run():
 	#create window
 	user32 = ctypes.windll.user32
 	DISPSIZE = user32.GetSystemMetrics(78), user32.GetSystemMetrics(79)
@@ -49,7 +49,7 @@ def run:
 	
 	#objects for introduction and instruction
 	#introduction text
-	introstr = f'''
+	introstr = '''
 	Welcome to the prisoner's dilemma game!
 	... get part ID and part Name for connection screen later ...
 	Press any key to continue. 
@@ -58,7 +58,7 @@ def run:
 	introtxt = TextStim(win, text=introstr, font='Arial', height=20, color='black', 
 						   wrapWidth=400)
 	#instruction text
-	inststr = f'''
+	inststr = '''
 	Imagine you are one of two people being questioned about the same crime. They are each talking 
 	to the interrogator separately. The interrogator gives each person the same deal: 
 	they can choose to vouch for the other person’s innocence (COOPERATING) or rat them out (DEFECTING). 
@@ -76,7 +76,7 @@ def run:
 	
 	#objects for representing participants, images
 	#telling people to choose avatar
-	avatstr = f'''
+	avatstr = '''
 	Please choose one of these avatars to represent you in the game.
 	Just press the key that responds to letter next to the image.
 	'''
@@ -99,8 +99,8 @@ def run:
 	partoverview = ImageStim(win, image='partchoice.png') #start screen from which participant chooses an avatar to represent them in the game
 	
 	#objects for during the game, in the loop
-	sentcountp = 35 #sentence count for the participant
-	sentcounto = 35 #sentence count for the opponent
+	sentcountp = 35
+	sentcounto = 35
 	
 	#info about controls/gameplay, should be displayed on the bottom left during the game
 	controlinfo = TextStim(win, text='''Press the left arrow to defect 
@@ -109,10 +109,10 @@ def run:
 						    pos=(-300, -300))
 	
 	# txt within game
-	connectstr = 'Your prison sentence is' + str(sentcountp) + 'months.\n' +
+	connectstr = ('Your prison sentence is' + str(sentcountp) + 'months.\n' +
 	'Your partner`s sentence is' + str(sentcounto) + 'months.\n' +
 	'The authorities are still not sure what to do with the two of you. Therefore, you and your partner\n'
-	'will be interrogated again by a different police officer. Again you have the choice to cooperate or defect.'
+	'will be interrogated again by a different police officer. Again you have the choice to cooperate or defect.')
 	
 	connecttxt = TextStim (win, text=connectstr, font='Arial', height=20, color='black', 
 						   wrapWidth=400)			               
@@ -122,14 +122,10 @@ def run:
 						   wrapWidth=400)
 	
 	
-	#goodbye screen
-	goodbyestr = f'Your final prison sentence is' + sentcountp + 'months.\n' + 'The game is now over.\n' +
-	'Thank you for playing!\n'\ 
-	goodbye = TextStim (win, text=goodbyestr, font='Arial', height=20, color='black', 
-						   wrapWidth=400)
+	
 	
 	#response keys
-	resp = getKeys(keyList = ('q', 'space', 'left', 'right', 'a', 'b', 'c', 'd'))
+	response = getKeys(keyList = ['q', 'space', 'left', 'right', 'a', 'b', 'c', 'd'])
 	
 	strategy = [1,2,3,4,5]  #random assignment of opponents strategy
 	shuffle(strategy)
@@ -149,18 +145,21 @@ def run:
 	defecting) as well as the opponents strategy and updates the sentence based on this.
 	As a reminder: left arrow to defect and the right arrow to cooperate.
 	'''				
-	def sentencetracker:
-			if response == 'right' & oppstrategy == 'cooperation' #both cooperate
-				sentcountp -= 3
-				sentcounto -= 3
-			if response == 'right' & oppstrategy == 'defect': #participant wants to cooperate,  but opponent rats them out
-				sentcountp -= 5
-			if response == 'left' & oppstrategy == 'cooperation': #participant rats opponent out, but opponent cooperates
-				sentcounto -= 5
-			if response == 'left' & oppstrategy == 'defect': #both defect
-				sentcountp -= 1
-				sentcounto -= 1
+	def sentencetracker(sentcounto, sentcountp, response, oppstrategy):
+	    if response == 'right' and oppstrategy == 'cooperation': #both cooperate
+	        sentcountp -= 3
+	        sentcounto -= 3
+	    elif response == 'right' and oppstrategy == 'defect': #participant wants to cooperate,  but opponent rats them out
+	        sentcountp -= 5
+	    elif response == 'left' and oppstrategy == 'cooperation': #participant rats opponent out, but opponent cooperates
+	        sentcounto -= 5
+	    else: #response == 'left' & oppstrategy == 'defect': #both defect
+	        sentcountp -= 1
+	        sentcounto -= 1
+	    return sentcounto, sentcountp
 		
+	sentcounto = 35
+	sentcountp = 35	
 	
 	
 	#defining strategies as functions 
@@ -173,153 +172,162 @@ def run:
 	displays the current sentence in months.
 	'''
 	
-	def cooperation:
+	def cooperation():
 		'''strategy in which opponent always cooperates'''
 		opponent.draw()
 		participant.draw()
 		controlinfo.draw()
 		win.flip() 
-		response = waitKeys(keyList=('left', 'right'))
+		response = waitKeys(keyList=['left', 'right'])
 		cooptxt.draw
 		win.flip()
 		wait(4) #seconds
 		oppstrategy = 'cooperation'
-		sentencetracker()
+		sentcounto, sentcountp = sentencetracker(sentcounto, sentcountp, response, oppstrategy) 
 		connecttxt.draw
 		win.flip()
+		return(oppstrategy, response)
 		
-	def defect:
+	def defect():
 		'''opponent always defects'''
 		opponent.draw()
 		participant.draw()
 		controlinfo.draw()
 		win.flip() 
-		response = waitKeys(keyList=('left', 'right'))
+		response = waitKeys(keyList=['left', 'right'])
 		deftxt.draw()
 		win.flip()
 		wait(4) #seconds
-		sentencetracker()
+		sentcounto, sentcountp = sentencetracker(sentcounto, sentcountp, response, oppstrategy)
 		oppstrategy = 'defect'
 		connecttxt.draw
 		win.flip()
+		return(oppstrategy, response)
 		
-	def random:
+	def randomstr():
 		'''opponent cooperates or defects on a random basis'''
 		shuffle(randostrategy)
-		random = randostrategy[0]
-			if random == 1:
-				opponent.draw()
-				participant.draw()
-				controlinfo.draw()
-				win.flip() 
-				response = waitKeys(keyList=('left', 'right'))
-				cooptxt.draw()
-				oppstrategy = 'cooperation'
-				win.flip() 
-				wait(4)#seconds
-				sentencetracker()
-				connecttxt.draw
-				win.flip()
-			else: 
-				opponent.draw()
-				participant.draw()
-				controlinfo.draw()
-				win.flip() 
-				response = waitKeys(keyList=('left', 'right'))
-				deftxt.draw()
-				oppstrategy = 'defect'
-				win.flip()
-				wait(4) #seconds
-				sentencetracker()
-				connecttxt.draw
-				win.flip()
+		rando = randostrategy[0]
+		if rando == 1:
+			opponent.draw()
+			participant.draw()
+			controlinfo.draw()
+			win.flip() 
+			response = waitKeys(keyList=['left', 'right'])
+			cooptxt.draw()
+			oppstrategy = 'cooperation'
+			win.flip() 
+			wait(4)#seconds
+			sentcounto, sentcountp = sentencetracker(sentcounto, sentcountp, response, oppstrategy)
+			connecttxt.draw
+			win.flip()
+			return(oppstrategy, response)
+		else: 
+			opponent.draw()
+			participant.draw()
+			controlinfo.draw()
+			win.flip() 
+			response = waitKeys(keyList=['left', 'right'])
+			deftxt.draw()
+			oppstrategy = 'defect'
+			win.flip()
+			wait(4) #seconds
+			sentcounto, sentcountp = sentencetracker(sentcounto, sentcountp, response, oppstrategy)
+			connecttxt.draw
+			win.flip()
+			return(oppstrategy, response)
 				
-	def nicetittat:
+	def nicetittat():
 		'''nice tit for that: opponent cooperates in first round, then copies participants moves'''
 		if ntrials[i] == 1:
+			opponent.draw()
+			participant.draw()
+			controlinfo.draw()
+			win.flip() 
+			response = waitKeys(keyList=['left', 'right'])
+			cooptxt.draw()
+			oppstrategy = 'cooperation'
+			win.flip() 
+			wait(4)#seconds
+			sentcounto, sentcountp = sentencetracker(sentcounto, sentcountp, response, oppstrategy)
+			connecttxt.draw
+			win.flip()
+			return(oppstrategy, response)
+		elif ntrials[i] > 1:
+			if response == 'right':
 				opponent.draw()
 				participant.draw()
 				controlinfo.draw()
 				win.flip() 
-				response = waitKeys(keyList=('left', 'right'))
+				response = waitKeys(keyList=['left', 'right'])
 				cooptxt.draw()
 				oppstrategy = 'cooperation'
 				win.flip() 
 				wait(4)#seconds
-				sentencetracker()
+				sentcounto, sentcountp = sentencetracker(sentcounto, sentcountp, response, oppstrategy)
 				connecttxt.draw
-				#sentence draw 
 				win.flip()
-			else ntrials[i] > 1:
-				if resp == 'right':
-					opponent.draw()
-					participant.draw()
-					controlinfo.draw()
-					win.flip() 
-					response = waitKeys(keyList=('left', 'right'))
-					cooptxt.draw()
-					oppstrategy = 'cooperation'
-					win.flip() 
-					wait(4)#seconds
-					sentencetracker()
-					connecttxt.draw
-					win.flip()
-				else resp == 'left':
-					opponent.draw()
-					participant.draw()
-					controlinfo.draw()
-					win.flip() 
-					response = waitKeys(keyList=('left', 'right'))
-					deftxt.draw()
-					oppstrategy = 'defect'
-					win.flip() 
-					wait(4)#seconds
-					sentencetracker()
-					connecttxt.draw
-					win.flip()
+				return(oppstrategy, response)
+			elif response == 'left':
+				opponent.draw()
+				participant.draw()
+				controlinfo.draw()
+				win.flip() 
+				response = waitKeys(keyList=['left', 'right'])
+				deftxt.draw()
+				oppstrategy = 'defect'
+				win.flip() 
+				wait(4)#seconds
+				sentcounto, sentcountp = sentencetracker(sentcounto, sentcountp, response, oppstrategy)
+				connecttxt.draw
+				win.flip()
+				return(oppstrategy, response)
 		
-	def susptittat:
+	def susptittat():
 		'''suspicious tit for that: opponent defects in the first round, then copies the participant's moves'''
 		if ntrials[i] == 1:
 				opponent.draw()
 				participant.draw()
 				controlinfo.draw()
 				win.flip() 
-				response = waitKeys(keyList=('left', 'right'))
+				response = waitKeys(keyList=['left', 'right'])
 				deftxt.draw()
 				oppstrategy = 'defect'
 				win.flip() 
 				wait(4)#seconds
-				sentencetracker()
+				sentcounto, sentcountp = sentencetracker(sentcounto, sentcountp, response, oppstrategy)
 				connecttxt.draw
 				win.flip()
-			else ntrials[i] > 1:
-				if resp == 'right':
-					opponent.draw()
-					participant.draw()
-					controlinfo.draw()
-					win.flip() 
-					response = waitKeys(keyList=('left', 'right'))
-					cooptxt.draw()
-					oppstrategy = 'cooperation'
-					win.flip() 
-					wait(4)#seconds
-					sentencetracker()
-					connecttxt.draw
-					win.flip()
-				else resp == 'left':
-					opponent.draw()
-					participant.draw()
-					controlinfo.draw()
-					win.flip() 
-					response = waitKeys(keyList=('left', 'right'))
-					deftxt.draw()
-					oppstrategy = 'defect'
-					win.flip() 
-					wait(4)#seconds
-					sentencetracker()
-					connecttxt.draw
-					win.flip()
+				return(oppstrategy, response)
+		elif ntrials[i] > 1:
+			if response == 'right':
+				opponent.draw()
+				participant.draw()
+				controlinfo.draw()
+				win.flip() 
+				response = waitKeys(keyList=['left', 'right'])
+				cooptxt.draw()
+				oppstrategy = 'cooperation'
+				win.flip() 
+				wait(4)#seconds
+				sentcounto, sentcountp = sentencetracker(sentcounto, sentcountp, response, oppstrategy)
+				connecttxt.draw
+				win.flip()
+				return(oppstrategy, response)
+			elif response == 'left':
+				opponent.draw()
+				participant.draw()
+				controlinfo.draw()
+				win.flip() 
+				response = waitKeys(keyList=['left', 'right'])
+				deftxt.draw()
+				oppstrategy = 'defect'
+				win.flip() 
+				wait(4)#seconds
+				sentcounto, sentcountp = sentencetracker(sentcounto, sentcountp, response, oppstrategy)
+				connecttxt.draw
+				win.flip()
+				return(oppstrategy, response)
 	
 	'''
 	Here we assign the conditions and make sure that the right avatars are displayed, based on the participant`s avatar
@@ -327,46 +335,46 @@ def run:
 	you want to use based on which avatars. This might seem like unnecessary complicated code, but it makes transparent
 	how the conditions relate to the avatars.
 	'''
-	def avatarassignment:
-		if condition == 1: #playing with an in-group member
-			if response == [a] #participant is female caucasian
+	def avatarassignment():
+		if condition == 1: #playing with an in-grouchrome://vivaldi-webui/startpage?section=Speed-dials&activeSpeedDialIndex=0&background-color=#252c3ap member
+			if response == 'a': #participant is female caucasian
 				opponent.setImage("opponent2.png")
 				participant.setImage("partA.png") 
-			elif response == [c]: #participant is male caucasian 
+			elif response == 'c': #participant is male caucasian 
 				opponent.setImage("opponent2.png")
 				participant.setImage("partC.png") 
-			elif response == [b]: #participant is female non-caucasian
+			elif response == 'b': #participant is female non-caucasian
 				opponent.setImage("opponent1.png") 
 				participant.setImage("partB.png")
-			else: #option d, participant is male non-caucasian
+			elif response == 'd': #option d, participant is male non-caucasian
 				opponent.setImage("opponent1.png") 
 				participant.setImage("partD.png")
 			print('in-group condition')
 		
 		if condition == 2: #playing with an out-group member
-			if response == [a] #participant is female caucasian
+			if response == 'a': #participant is female caucasian
 				opponent.setImage("opponent1.png")
 				participant.setImage("partA.png") 
-			elif response == [c]: #participant is male caucasian 
+			elif response == 'c': #participant is male caucasian 
 				opponent.setImage("opponent1.png")
 				participant.setImage("partC.png") 
-			elif response == [b]: #participant is female non-caucasian
+			elif response == 'b': #participant is female non-caucasian
 				opponent.setImage("opponent2.png") 
 				participant.setImage("partB.png")
-			else: #option d, participant is male non-caucasian
+			elif response == 'd': #option d, participant is male non-caucasian
 				opponent.setImage("opponent2.png") 
 				participant.setImage("partD.png")
 			print('out-group condition')
 		
 		if condition == 3: #playing with no information about opponent
 			opponent.setImage("anonymous.jpg")
-			if response == [a] #participant is female caucasian
+			if response == 'a': #participant is female caucasian
 				participant.setImage("partA.png") 
-			elif response == [c]: #participant is male caucasian 
+			elif response == 'c': #participant is male caucasian 
 				participant.setImage("partC.png") 
-			elif response == [b]: #participant is female non-caucasian
+			elif response == 'b': #participant is female non-caucasian
 				participant.setImage("partB.png")
-			else: #option d, participant is male non-caucasian
+			elif response == 'd': #option d, participant is male non-caucasian
 				participant.setImage("partD.png")
 			print('anonymous condition')
 	
@@ -378,29 +386,34 @@ def run:
 	backgroundimage.draw #background prisonwall
 	introtxt.draw()
 	win.flip()
-	waitKeys(keyList = ('space')) #wait until participant pressed space to continue
+	waitKeys(keyList = ['space']) #wait until participant pressed space to continue
 	
 	#choosing avatar that represents participant 
 	avattxt.draw()
 	partoverview.draw()
 	win.flip()
-	response = waitKeys(keyList = ('a', 'b','c','d'))
+	response = waitKeys(keyList = ['a', 'b','c','d'])
 	
 	shuffle(condlist) #randomly assigning condition (in group, out group, anonymous opponent)
 	condition = condlist[0]
 	avatarassignment()
 	
-		#waitkeys?
-	shuffle(strategy)
-	
 	#explaining the game
 	backgroundimage.draw()
 	insttxt.draw()
 	win.flip()
-	waitKeys(keyList = ('space')) #wait until participant read instructions and pressed space to start the trial loop
+	waitKeys(keyList = ['space']) #wait until participant read instructions and pressed space to start the trial loop
+	
+	'''
+	Sentence count for the participant and the opponent. You can change this according to your needs, 
+	however please note that it's 35 because we defined 7 trial rounds and the maximum the 
+	sentence can change during each round is 5. 7 x 5 is 35, so this is set to prevent the sentence count
+	from going below 0.
+	'''
+	 
 	
 	#trial loop
-	background_image.draw
+	backgroundimage.draw()
 	for i in range(ntrials):
 		
 	
@@ -415,19 +428,23 @@ def run:
 	
 		#random coop or defect
 		elif strategy == 3:
-			random()
+			randomstr()
 	
 		elif strategy == 4:
 			nicetittat()
 			
-		else strategy == 5:
+		elif strategy == 5:
 			susptittat()
 			
 			
-	
-	
-	#exit early: 
-		if resp == ['q']:
+		#goodbye screen
+		goodbyestr = ('Your final prison sentence is' + sentcountp + 'months.\n' + 'The game is now over.\n' +
+		'Thank you for playing!\n')
+		goodbye = TextStim (win, text=goodbyestr, font='Arial', height=20, color='black', 
+							   wrapWidth=400)
+		
+		#exit early: 
+		if response == 'q':
 			goodbye.draw()
 			win.flip()
 			wait(5)
