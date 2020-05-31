@@ -6,6 +6,7 @@ Created on Sat May 30 16:59:51 2020
 """
 
 import unittest
+from prisonersdilemma import run
 '''
 This is a function that tracks the sentence count in the prisoner's dilemma game.
 I'm gonna test it by setting sentcounto and sentcountp to 0 and then setting response == 'right'
@@ -13,8 +14,9 @@ and oppstrategy == 'defect' to see if it calculates the sentence correctly.
 
 
 Information for the person who grades this: I copied the function instead of importing it because
-I had problems with running my code and couldn't package my experiment because of these errors.
-In order to get at least something else done, I decided to start with testing. Hope that's okay.
+I wasn't 100% sure about how everything works (and it's already shortly before the deadline now) 
+and decided to test the function like that,
+just to be sure. I included the code from the tutorial anyways. Hope that's okay.
 '''
 
 def sentencetracker(sentcounto, sentcountp, response, oppstrategy):
@@ -30,6 +32,7 @@ def sentencetracker(sentcounto, sentcountp, response, oppstrategy):
         sentcounto -= 1
     return sentcounto, sentcountp
 
+
 response = 'right'
 oppstrategy = 'defect'
 sentcountp = 0
@@ -41,7 +44,7 @@ sentcounto, sentcountp = sentencetracker(sentcounto, sentcountp, response, oppst
 print(sentcounto)
 print(sentcountp)
 
-'''
+
 
 class testfunctionsdilemma(unittest.TestCase):
 	
@@ -56,4 +59,3 @@ class testfunctionsdilemma(unittest.TestCase):
 		
 if __name__ == '__main__':
 	unittest.main()
-'''
